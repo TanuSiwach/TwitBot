@@ -7,9 +7,10 @@ var T = new Twit({
     access_token: process.env.access_token,
     access_token_secret: process.env.access_token_secret
 })
+
 var retweet = function() {
     var params = {
-        q: '#webdevelopment',
+        q: '#webdevelopment #nodejs',
         result_type: 'recent',
         lang: 'en'
     }
@@ -24,7 +25,7 @@ var retweet = function() {
                     console.log('Retweeted!!!');
                 }
                 if (err) {
-                    // console.log(err);
+                    console.log(err);
                     console.log('Something went wrong while RETWEETING...');
                 }
             });
@@ -35,4 +36,33 @@ var retweet = function() {
 }
 
 retweet();
-setInterval(retweet, 1000 * 60 * 60);
+setInterval(retweet, 1000 * 60);
+
+var likeTweet = function() {
+    var params = {
+        q: '#webdevelopment #nodejs',
+        result_type: 'recent',
+        lang: 'en'
+    }
+    T.get('search/tweets', params, function(err, data) {
+        var tweet = data.statuses;
+        var randomTweet = ranDom(tweet);
+
+        if (typeof randomTweet != 'undefined') {
+            T.post('favorites/create', { id: randomTweet.id_str }, function(err, response) {
+                if (err) {
+                    console.log('Something went wrong while LIKING...');
+                } else {
+                    console.log('Liked!!!');
+                }
+            });
+        }
+    });
+}
+likeTweet();
+setInterval(likeTweet, 1000 * 60);
+
+function ranDom(arr) {
+    var index = Math.floor(Math.random() * arr.length);
+    return arr[index];
+};
